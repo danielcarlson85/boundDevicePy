@@ -74,13 +74,15 @@ class Program:
             stopwatch = time.perf_counter()
             training_data = json.dumps(replace_empty_with_string(Program.UserData))
             Program.send_training_data_to_iothub(training_data)
-            Program.log_to_console(stopwatch)
+
             Program.UserData['TrainingData'].clear()
 
     @staticmethod
     def send_training_data_to_iothub(data_to_send):
+        print("Sending data to IoTHub...")
         message = Message(data_to_send)
         Program.client.send_message(message)
+        print("DONE, data sent to IoTHub.")
 
     @staticmethod
     def log_to_console(stopwatch):
