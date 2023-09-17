@@ -1,0 +1,3 @@
+0 Upp
+1 Mitten
+2 Ner
