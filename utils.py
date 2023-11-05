@@ -22,7 +22,7 @@ def showS():
     sense.clear()
     sense.show_letter("S")
     
-def showO():
+def show0():
     sense.clear()
     sense.show_letter("0", text_colour= setgreentext())
     
@@ -38,14 +38,21 @@ def setgreentext():
 def setredtext():
     sense.clear()
     return [255, 0, 0]
+    
+def setGreenDot():
+    sense.clear()
+    sense.set_pixel(0, 7, 0, 255, 1)
+    
 
 def restart_bound_script():
+    setBlackColor()
     python = sys.executable
     os.execl(python, python, *sys.argv)
     
 def reset_all():
     start.UserData.delaytime = 20
-    start.UserData.count = 0
+    start.UserData.reps = 0
+    start.UserData.totalReps = 0
     start.UserData.moving = True
     start.UserData.previous = 0
     start.UserData.totalPause=0
@@ -71,27 +78,23 @@ def createNewUserDataObject():
     start.UserData.data = json.loads(clean_object)
     start.UserData.data["TrainingData"] = []
 
-def sendUserInfoToTablet():
-    
+def sendTotalReps():
+
     print(f"user email: {start.UserData.email}")
     print(f"user machine: {start.UserData.machinename}")
     print(f"user firstname: {start.UserData.firstname}")
     print(f"user lastname: {start.UserData.lastname}")
     print(f"user status: {start.UserData.status}")
-    
-    
+    print(f"user weight: {start.UserData.weight}")
+    print(f"user total reps: {start.UserData.totalReps}")
+
+
     firstname=start.UserData.firstname
     lastname = start.UserData.lastname
     status = start.UserData.status
-    totalReps = start.UserData.count
+    totalReps = start.UserData.totalReps
     machinename = start.UserData.machinename
     email=start.UserData.email
     weight=start.UserData.weight
     
-
-    requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={weight}&machinename={machinename}&status=online")
-    
-    #requests.get(f"https://boundhub.azurewebsites.net/send?name={firstname}{lastname}&status={status}&reps={totalreps}&machine={machine}")
-    
-
-
+    requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={totalReps}&machinename={machinename}&weight={weight}&status=online")

@@ -18,35 +18,39 @@ def shutdown_rpi():
     utils.setBlackColor()
     subprocess.run(["sudo","poweroff"])
     
-def startnow(method_request):
-    try:
-        print(f"Method started {method_request.name}")
-        print(method_request.payload)
-                
-        start.UserData.email = method_request.payload["Email"]
-        start.UserData.machinename=method_request.payload["DeviceData"]["MachineName"]
-        start.UserData.firstname = method_request.payload["FirstName"]
-        start.UserData.lastname = method_request.payload["LastName"]
-        start.UserData.status = method_request.payload["Device"]["AzureIoTHubDevice"]["connectionState"]
-        
-        weight = (method_request.payload["DeviceData"]["Weight"])
-        start.UserData.weight = weight
-        
-        clean_object = json.dumps(utils.replace_empty_with_string(method_request.payload["DeviceData"]))
-        start.UserData.data = json.loads(clean_object)
-        start.UserData.data['TrainingData'] = []
-                        
-        start.UserData.startExcersice = True        
-        excersiceAlgorithms.startExcersice()
-        
-        
-        print("startnow method exited")
-        
-    except Exception as e:
-        print("Wrong json format" + e)
-    finally:
-        utils.restart_bound_script()
-        return-1
+def startnow(usertext):
+    print(f"Method started startnow")
+    print(usertext)
+            
+            
+    user = json.loads(usertext)        
+    
+    print(user["Email"])
+    
+    start.UserData.email = user["Email"]
+    start.UserData.machinename=user["DeviceData"]["MachineName"]
+    start.UserData.firstname = user["FirstName"]
+    start.UserData.lastname = user["LastName"]
+    start.UserData.status = user["Device"]["AzureIoTHubDevice"]["connectionState"]
+    
+    weight = (user["DeviceData"]["Weight"])
+    start.UserData.weight = weight
+    
+    clean_object = json.dumps(utils.replace_empty_with_string(user["DeviceData"]))
+    start.UserData.data = json.loads(clean_object)
+    start.UserData.data['TrainingData'] = []
+                    
+    start.UserData.startExcersice = True        
+    excersiceAlgorithms.checkForDeviceMovements()
+    
+    print("Startnow method exited")
+    
+    
+#    except Exception as e:
+#        print("Wrong json format" + e)
+#    finally:
+#        utils.restart_bound_script()
+#        return-1
         
 def loggin_on_device():
     if not (hasLoggedInOnDevice):

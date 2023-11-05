@@ -10,13 +10,23 @@ class Program:
     method_request = {}
 
     def on_message_received(message):
-        
         message = message.data.decode("utf-8")
-        print("A ssage recieved: "+ message)
         
-        if message == "online":
+        result = message.split("****")
+        
+        if result[0] == "online":
             print("User is logged in")
-            utils.setGreenColor()        
+            utils.setGreenColor() 
+        
+        if result[0] == "restart":
+            print("Excersice done restarting device...")
+            utils.restart_bound_script()
+        
+        if len(result) == 2:
+            if result[0] == "start":
+                print(result[0])
+                print(result[1])
+                iothubMethods.startnow(result[1])       
     
     def send_method_request():   
         payload = '{"parap1":"value1"}'
@@ -51,13 +61,15 @@ class Program:
     @staticmethod
     def recieved_method_request_from_mobile(method_request):
 
-        if method_request.name == "start":
-            iothubMethods.startnow(method_request)
-
-        if method_request.name == "reboot":
-            iothubMethods.reboot_rpi()
-        if method_request.name == "shutdown":
-            iothubMethods.shutdown_rpi()
+#         if method_request.name == "start":
+#             iothubMethods.startnow(method_request)
+ 
+         if method_request.name == "reboot":
+             iothubMethods.reboot_rpi()
+         if method_request.name == "shutdown":
+             iothubMethods.shutdown_rpi()
+            
+         print("End start method")
         
         #Program.client.disconnect()
         
@@ -68,5 +80,6 @@ class Program:
         Program.client.on_method_request_received = Program.recieved_method_request_from_mobile
         Program.client.on_message_received = Program.on_message_received
         Program.client.connect()
-        utils.setBlackColor()
+        utils.setGreenDot()
+        #utils.setBlackColor()
         input("Press Enter to exit\n")
