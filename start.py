@@ -15,13 +15,13 @@ import iothubManager
 
 class UserData:
     delaytime = 20
-    count = 0
+    reps = 0
     moving = True
-    previous = 0
+    deviceSensitivity = 0
     sense = SenseHat()
     conn_str = ""
     startExcersice = False
-    hasDeviceBeenMoved = False
+    startCheckingForDeviceMovements = False
     totalPause=0
     weight = 0
     hasLoggedInOnDevice = False
@@ -32,7 +32,7 @@ class UserData:
     lastname= "sdfsdf"
     machinename = ""
     status = ""
-    
+    totalReps = 0
     
     
 if __name__ == "__main__":
