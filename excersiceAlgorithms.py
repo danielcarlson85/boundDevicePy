@@ -13,7 +13,7 @@ sense = SenseHat()
 def stopped(accelerator_value):
     return abs(accelerator_value) < 0.17
 
-def startExcersice():
+def checkForDeviceMovements():
     utils.show0()
 
     if start.UserData.data == None:
@@ -24,27 +24,30 @@ def startExcersice():
         accelerator_value = acceleration['z'] - 1.0
         short_accelerator_value = float(str(accelerator_value)[:5])
         
-        if short_accelerator_value >0:
+        if short_accelerator_value >0.4:
             break
-    loop()
+    startExercise()
             
-def loop():
+def startExercise():
       
     while start.UserData.startExcersice:
-        if start.UserData.count == 10: start.UserData.count = 0
+        if start.UserData.reps == 10:
+            start.UserData.reps = 0
+            
         time.sleep(start.UserData.delaytime / 1000)
         acceleration = sense.get_accelerometer_raw()
         accelerator_value = acceleration['z'] - 1.0
         
-        if start.UserData.count >= 0 and start.UserData.count < 10:
+        if start.UserData.reps >= 0 and start.UserData.reps < 10:
             print("")
-            utils.showLetter(start.UserData.count)
+            utils.showLetter(start.UserData.reps)
         if start.UserData.moving:
             if stopped(accelerator_value):
                 start.UserData.deviceSensitivity += 1
                 if start.UserData.deviceSensitivity >= 15:
                     if start.UserData.direction =="up":
-                        start.UserData.count += 1
+                        start.UserData.reps += 1
+                        start.UserData.totalReps += 1
                     start.UserData.deviceSensitivity = 0
                     start.UserData.moving = False
             else:
@@ -61,8 +64,8 @@ def loop():
                 start.UserData.deviceSensitivity += 1
                 start.UserData.direction = "down"
             
-        if start.UserData.count >-1:
-            start.UserData.data['TrainingData'].append({'X': start.UserData.count, 'Y': start.UserData.weight, 'Z': int(time.time())})
+        if start.UserData.reps >-1:
+            start.UserData.data['TrainingData'].append({'X': start.UserData.totalReps, 'Y': start.UserData.weight, 'Z': int(time.time())})
           
         short_accelerator_value = float(str(accelerator_value)[:5])
      
@@ -78,14 +81,12 @@ def loop():
             if start.UserData.totalPause == 100:
                 start.UserData.totalPause = 0
                 training_data = json.dumps(utils.replace_empty_with_string(start.UserData.data))
-                #print(training_data)
                 iothubManager.Program.send_data_to_iothub(training_data)
-                start.UserData.count=0
+                start.UserData.reps=0
                 utils.setBlackColor()
                 start.UserData.startExcersice=True
-                startExcersice()
+                checkForDeviceMovements()
                 break
 
         else:
             start.UserData.totalPause = 0
-    return -1
