@@ -76,24 +76,26 @@ class UserData:
     totalReps = 0
     isLoopRunning = False
     isFirstTimeStarted=True
+    exception=""
     
 if __name__ == "__main__":
-    
+    BoundUI=tk.Tk()    
+
     try:
-        t=tk.Tk()
         utils.setGreenDot()
+        
+        BoundUI.title("Bound Device")
         print("Device started")
-        conn_str = open("/home/pi/Desktop/BoundDevicePySplit/connectionstring","r").readline()
+        conn_str = open("connectionstring","r").readline()
         iothubManager.Program.setup(conn_str)
-        tk.mainloop()
-    except EOFError as e:
-        print("EOFError now")
+        BoundUI.mainloop()
+        input("Press Enter to exit...")
 
     except Exception as e:
+               
+        exception =str(e)
+        utils.sendException(exception)
         utils.setRedDot()
-        with open("/home/pi/Desktop/BoundDevicePySplit/log.txt",'a') as file:
-            file.write("")
-            file.write(str(e))
-        print(str(e))
-        utils.restart_bound_script()
-
+        print(exception)
+        iothubManager.Program.setup(conn_str)
+        BoundUI.mainloop()
