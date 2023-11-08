@@ -77,16 +77,17 @@ class UserData:
     isLoopRunning = False
     isFirstTimeStarted=True
     exception=""
+    isDebug=True
     
 if __name__ == "__main__":
     BoundUI=tk.Tk()    
 
     try:
         utils.setGreenDot()
-        
+        utils.sendDebugTextToTablet("Starting up device")
         BoundUI.title("Bound Device")
         print("Device started")
-        conn_str = open("connectionstring","r").readline()
+        conn_str = open("/home/pi/Desktop/BoundDevicePySplit/connectionstring","r").readline()
         iothubManager.Program.setup(conn_str)
         BoundUI.mainloop()
         input("Press Enter to exit...")
@@ -97,5 +98,7 @@ if __name__ == "__main__":
         utils.sendException(exception)
         utils.setRedDot()
         print(exception)
+        utils.sendDebugTextToTablet("EXEPTION: "+ exception)
+        
         iothubManager.Program.setup(conn_str)
         BoundUI.mainloop()
