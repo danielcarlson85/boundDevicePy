@@ -6,12 +6,53 @@
 #pip install requests
 #sudo reboot
 
+#För att kunna starta RPI utan skärm inkopplad:
+#öppna en terminal och skriv :
+#sudo nano /boot/config.txt
+#Gå ner till du ser:
+#hdmi_force_hotplug=1
+#ta bort # för att aktivera den raden
+
+
+
+# !!!!!! Om man ska starta scriptet via systemctl, se till att denna app är stängd. 
+#och att inte .py filerna är öppna i något program, annars kan inte systemctl 
+# komma åt filerna och man får EOF exception i loggarna!!!!!!
+
+
+#För att få Bound att starta när datorn startas gör detta:
+#1. öppna en terminal och skriv:
+# sudo nano /home/pi/.config/autostart/bound.config
+# i filen skriv:
+#[Desktop Entry]
+#Encoding=UTF-8
+#Type=Application
+#Name=Bound service
+#Comment=
+#Exec= /usr/bin/python3 /home/pi/Desktop/BoundDevicePySplit/start.py
+#StartupNotify=false
+#Terminal=True
+#Hidden=false
+
+
+#Se till att start.py ligger i rätt katalog
+#starta om datorn för att kolla ifall det funkar
+
+
+
+
+
+#Aktuellt:
+
+#Ifall det ligger flera meddelanden som tex "restartDevice", "online" osv kommer de att köras tills alla meddelanden är borta
+
 import os
 from sense_hat import SenseHat
 from azure.iot.device import IoTHubDeviceClient, exceptions, Message
 import random
 import utils
 import iothubManager
+import tkinter as tk
 
 class UserData:
     delaytime = 20
@@ -33,15 +74,26 @@ class UserData:
     machinename = ""
     status = ""
     totalReps = 0
-    
+    isLoopRunning = False
+    isFirstTimeStarted=True
     
 if __name__ == "__main__":
+    
     try:
+        t=tk.Tk()
+        utils.setGreenDot()
         print("Device started")
-        conn_str = open("connectionstring","r").readlines()
+        conn_str = open("/home/pi/Desktop/BoundDevicePySplit/connectionstring","r").readline()
         iothubManager.Program.setup(conn_str)
-        
+        tk.mainloop()
+    except EOFError as e:
+        print("EOFError now")
+
     except Exception as e:
-        print(e)
-    finally:     
-        utils.setBlackColor()
+        utils.setRedDot()
+        with open("/home/pi/Desktop/BoundDevicePySplit/log.txt",'a') as file:
+            file.write("")
+            file.write(str(e))
+        print(str(e))
+        utils.restart_bound_script()
+
