@@ -12,25 +12,31 @@ class Program:
     def on_message_received(message):
         message = message.data.decode("utf-8")
         print("Incomming message: " +message)
-        
+        utils.sendDebugTextToTablet("Incomming message: " +message)
+                
                 
         result = message.split("****")
+        
+        
+        #print(result)
         
         if result[0] == "login":
             print("User is logged in")
             utils.setGreenColor()
+            utils.sendDebugTextToTablet("User is logged in")
             
-        if result[0] == "restartRPI":
+        elif result[0] == "restartRPI":
                 utils.restartRPI()
                 
-        if result[0] == "shutdownRPI":
+        elif result[0] == "shutdownRPI":
                 utils.shutdownRPI()
 
-        if result[0] == "restartDevice":
+        elif result[0] == "restartDevice":
                 print("Restarting device...")
                 utils.restart_bound_script()
 
-        if result[0] == "start":
+        elif result[0] == "start":
+                utils.sendDebugTextToTablet("Startng excersise")
                 print(result[0])
                 print(result[1])
                 iothubMethods.startnow(result[1])
@@ -39,6 +45,7 @@ class Program:
     def send_data_to_iothub(data_to_send):
         global method_request
         print("Sending data to IoTHub...")
+        utils.sendDebugTextToTablet("Sending data to IoTHub...")
         utils.sendTotalReps()
         start.UserData.startExcersice = True
         start.UserData.hasDeviceBeenMoved = False
@@ -58,4 +65,5 @@ class Program:
         Program.client = IoTHubDeviceClient.create_from_connection_string(conn_str)
         Program.client.on_message_received = Program.on_message_received
         Program.client.connect()
+        utils.sendDebugTextToTablet("Device is up and running")
 
