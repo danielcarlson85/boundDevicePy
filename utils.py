@@ -52,6 +52,7 @@ def setRedDot():
     
 
 def restart_bound_script():
+    sendDebugTextToTablet("Restarting device...")
     python = sys.executable
     os.execl(python, python, *sys.argv)
     
@@ -123,6 +124,24 @@ def sendTotalReps():
     
     requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={totalReps}&machinename={machinename}&weight={weight}&status=online")
 
+def sendUserInfoToTablet(usertext):
+    
+    
+    user = json.loads(usertext)
+    print(user)
+    
+    email = user["Email"]
+    machinename=user["DeviceData"]["MachineName"]
+    firstname = user["FirstName"]
+    lastname = user["LastName"]
+    status = user["Device"]["AzureIoTHubDevice"]["connectionState"]
+    
+    weight = user["DeviceData"]["Weight"]
+    
+    requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={0}&machinename={machinename}&weight={0}&status=online")
+
+
+
 def sendException(exception):
     
     requests.get(f"https://boundhub.azurewebsites.net/send?name={exception}")
@@ -131,3 +150,7 @@ def sendException(exception):
 def sendTextToTablet(text):
     
     requests.get(f"https://boundhub.azurewebsites.net/send?name={text}")
+
+def sendDebugTextToTablet(text):
+    if start.UserData.isDebug:
+        requests.get(f"https://boundhub.azurewebsites.net/send?debugText={text}")
