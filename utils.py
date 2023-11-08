@@ -4,6 +4,9 @@ import json
 import os
 import sys
 import requests
+import subprocess
+import time
+
 
 sense = SenseHat()
 
@@ -14,7 +17,7 @@ def setRedColor():
 def setGreenColor():
     sense.clear()
     sense.clear(0,255,0)
- 
+    
 def setBlackColor():
     sense.clear()
 
@@ -43,11 +46,31 @@ def setGreenDot():
     sense.clear()
     sense.set_pixel(0, 7, 0, 255, 1)
     
+def setRedDot():
+    sense.clear()
+    sense.set_pixel(0, 7, 255, 0, 1)
+    
 
 def restart_bound_script():
-    setBlackColor()
     python = sys.executable
     os.execl(python, python, *sys.argv)
+    
+    
+def restartRPI():
+    print("RPI is restarting...")
+    sense.show_letter("R", text_colour= setredtext())
+    time.sleep(2)
+    setBlackColor()
+    subprocess.run(["sudo","reboot"])
+
+
+def shutdownRPI():
+    print("shutting down...")
+    sense.show_letter("S", text_colour= setredtext())
+    time.sleep(2)
+    setBlackColor()
+    subprocess.run(["sudo","poweroff"])
+    
     
 def reset_all():
     start.UserData.delaytime = 20
