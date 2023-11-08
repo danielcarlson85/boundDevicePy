@@ -20,17 +20,17 @@ class Program:
             print("User is logged in")
             utils.setGreenColor()
             
-        elif result[0] == "restartRPI":
+        if result[0] == "restartRPI":
                 utils.restartRPI()
                 
-        elif result[0] == "shutdownRPI":
+        if result[0] == "shutdownRPI":
                 utils.shutdownRPI()
 
-        elif result[0] == "restartDevice":
+        if result[0] == "restartDevice":
                 print("Restarting device...")
                 utils.restart_bound_script()
 
-        elif result[0] == "start":
+        if result[0] == "start":
                 print(result[0])
                 print(result[1])
                 iothubMethods.startnow(result[1])
@@ -58,5 +58,4 @@ class Program:
         Program.client = IoTHubDeviceClient.create_from_connection_string(conn_str)
         Program.client.on_message_received = Program.on_message_received
         Program.client.connect()
-        input("Press Enter to exit...")
 
