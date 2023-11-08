@@ -110,7 +110,8 @@ def sendTotalReps():
     print(f"user status: {start.UserData.status}")
     print(f"user weight: {start.UserData.weight}")
     print(f"user total reps: {start.UserData.totalReps}")
-
+    
+    
 
     firstname=start.UserData.firstname
     lastname = start.UserData.lastname
@@ -121,3 +122,12 @@ def sendTotalReps():
     weight=start.UserData.weight
     
     requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={totalReps}&machinename={machinename}&weight={weight}&status=online")
+
+def sendException(exception):
+    
+    requests.get(f"https://boundhub.azurewebsites.net/send?name={exception}")
+
+
+def sendTextToTablet(text):
+    
+    requests.get(f"https://boundhub.azurewebsites.net/send?name={text}")
