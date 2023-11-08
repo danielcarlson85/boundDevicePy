@@ -19,12 +19,13 @@ def checkForDeviceMovements():
     if start.UserData.data == None:
         utils.createNewUserDataObject()
 
-    while start.UserData.startExcersice:
+    while True:
         acceleration = sense.get_accelerometer_raw()
         accelerator_value = acceleration['z'] - 1.0
         short_accelerator_value = float(str(accelerator_value)[:5])
         
         if short_accelerator_value >0.4:
+            start.UserData.startExcersice=True
             break
     startExercise()
             
@@ -84,7 +85,7 @@ def startExercise():
                 iothubManager.Program.send_data_to_iothub(training_data)
                 start.UserData.reps=0
                 utils.setBlackColor()
-                start.UserData.startExcersice=True
+                start.UserData.startExcersice=False
                 checkForDeviceMovements()
                 break
 
