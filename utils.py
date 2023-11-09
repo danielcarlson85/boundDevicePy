@@ -102,49 +102,10 @@ def createNewUserDataObject():
     start.UserData.data = json.loads(clean_object)
     start.UserData.data["TrainingData"] = []
 
-def sendTotalReps():
-
-    print(f"user email: {start.UserData.email}")
-    print(f"user machine: {start.UserData.machinename}")
-    print(f"user firstname: {start.UserData.firstname}")
-    print(f"user lastname: {start.UserData.lastname}")
-    print(f"user status: {start.UserData.status}")
-    print(f"user weight: {start.UserData.weight}")
-    print(f"user total reps: {start.UserData.totalReps}")
-    
-    
-
-    firstname=start.UserData.firstname
-    lastname = start.UserData.lastname
-    status = start.UserData.status
-    totalReps = start.UserData.totalReps
-    machinename = start.UserData.machinename
-    email=start.UserData.email
-    weight=start.UserData.weight
-    
-    requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={totalReps}&machinename={machinename}&weight={weight}&status=online")
-
-def sendUserInfoToTablet(usertext):
-    
-    
-    user = json.loads(usertext)
-    print(user)
-    
-    email = user["Email"]
-    machinename=user["DeviceData"]["MachineName"]
-    firstname = user["FirstName"]
-    lastname = user["LastName"]
-    status = user["Device"]["AzureIoTHubDevice"]["connectionState"]
-    
-    weight = user["DeviceData"]["Weight"]
-    
-    requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={0}&machinename={machinename}&weight={0}&status=online")
-
-
 
 def sendException(exception):
     
-    requests.get(f"https://boundhub.azurewebsites.net/send?name={exception}")
+    requests.get(f"https://boundhub.azurewebsites.net/send?debugText={exception}")
 
 
 def sendTextToTablet(text):
@@ -152,5 +113,11 @@ def sendTextToTablet(text):
     requests.get(f"https://boundhub.azurewebsites.net/send?name={text}")
 
 def sendDebugTextToTablet(text):
-    if start.UserData.isDebug:
-        requests.get(f"https://boundhub.azurewebsites.net/send?debugText={text}")
+    
+    email = start.UserData.email
+    machinename=start.UserData.machinename
+    status = start.UserData.status
+    reps = start.UserData.totalReps
+    weight = start.UserData.weight
+
+    requests.get(f"https://boundhub.azurewebsites.net/send?name={email}&reps={reps}&machinename={machinename}&weight={weight}&status=online&debugText={text}")
