@@ -95,7 +95,6 @@ if __name__ == "__main__":
     except Exception as e:
                
         exception =str(e)
-        utils.sendException(exception)
         utils.setRedDot()
         print(exception)
         utils.sendDebugTextToTablet("EXEPTION: "+ exception)
