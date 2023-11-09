@@ -46,7 +46,6 @@ class Program:
         global method_request
         print("Sending data to IoTHub...")
         utils.sendDebugTextToTablet("Sending data to IoTHub...")
-        utils.sendTotalReps()
         start.UserData.startExcersice = True
         start.UserData.hasDeviceBeenMoved = False
         message = Message(data_to_send)
@@ -57,6 +56,7 @@ class Program:
         utils.setGreenColor()
         time.sleep(1)
         print("DONE, data sent to IoTHub.")
+        utils.sendDebugTextToTablet("DONE, data sent to IoTHub.")
         return
         
     @staticmethod
